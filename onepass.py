@@ -2,16 +2,25 @@ import os.path
 import sqlite3
 from key import Key
 
-def menu():
+def viewKeys(c):
+    c.execute("SELECT * FROM keys")
+    allRows = c.fetchall()
+    
+    unzippedKeys = list(zip(*allRows))
+    
+    website_keyList = (unzippedKeys[0])
+    
+    return website_keyList
+    
+def menu(c):
     print("\n***Onepass - Password Manager***\n")
     
-    print('(a)dd')
-    print('(d)elete')
-    print('(v)iew')
-    print('(c)opy')
-    print('(q)uit')
+    website_keyList = viewKeys(c)
     
-    selected = input("\n>>> ").lower()
+    for website_key in website_keyList:
+        print("-- " + website_key)
+    
+    selected = input('\n(a)dd, (d)elete, (c)opy, or (q)uit? >>> ').lower()
     
     return selected
            
@@ -55,9 +64,8 @@ def deleteKey(website_key, conn, c):
 def main():
     conn = sqlite3.connect('test.db')
     c = conn.cursor()
-    
-    # createTable(c)
-    selected = menu()
+
+    selected = menu(c)
     
     if selected == "a":   
         keys = generateKeys()
@@ -69,14 +77,6 @@ def main():
         pass
     elif selected == "q":
         pass
-    
-    # insertKey(keys, conn, c)
-    
-    # c.execute("SELECT * FROM keys WHERE password='test'")
-    
-    c.execute("SELECT * FROM keys")
-    
-    print(c.fetchall())
     
     conn.commit()
     conn.close()
