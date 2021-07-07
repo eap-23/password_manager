@@ -1,5 +1,6 @@
 import os.path
 import sqlite3
+import pyperclip
 from key import Key
 
 def viewKeys(c):
@@ -13,12 +14,12 @@ def viewKeys(c):
     return website_keyList
     
 def menu(c):
-    print("\n***Onepass - Password Manager***\n")
+    print("\nOnePass - Password Manager")
     
     website_keyList = viewKeys(c)
     
     for website_key in website_keyList:
-        print("-- " + website_key)
+        print("|-- " + website_key)
     
     selected = input('\n(a)dd, (d)elete, (c)opy, or (q)uit? >>> ').lower()
     
@@ -60,6 +61,16 @@ def deleteKey(website_key, conn, c):
      with conn:
          c.execute("DELETE from keys WHERE website_key = :website_key",
                    {'website_key': website_key})
+         
+def copyKey(website_key, conn, c):
+    with conn:
+        c.execute("SELECT password FROM keys WHERE website_key = :website_key",
+                  {'website_key': website_key})
+        
+        password = c.fetchone()
+        pyperclip.copy(password[0])
+        
+        print("Password has been copied to your clipboard!")
           
 def main():
     conn = sqlite3.connect('test.db')
@@ -74,7 +85,8 @@ def main():
         website_key = input("Enter Key to Delete: ")
         deleteKey(website_key, conn, c)
     elif selected == "c":
-        pass
+        website_key = input("Enter Key to Copy Password: ")
+        copyKey(website_key, conn, c)
     elif selected == "q":
         pass
     
