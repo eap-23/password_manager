@@ -71,6 +71,11 @@ def copyKey(website_key, conn, c):
 def main():
     conn = sqlite3.connect('test.db')
     c = conn.cursor()
+    
+    if os.path.exists('test.db'):
+        pass
+    else:
+        createTable(c)
 
     selected = menu(c)
     
