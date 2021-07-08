@@ -4,12 +4,8 @@ import pyperclip
 from key import Key
 
 def viewKeys(c):
-    c.execute("SELECT * FROM keys")
-    allRows = c.fetchall()
-    
-    unzippedKeys = list(zip(*allRows))
-    
-    website_keyList = (unzippedKeys[0])
+    c.execute("SELECT website_key FROM keys")
+    website_keyList = c.fetchall()
     
     return website_keyList
     
@@ -19,7 +15,7 @@ def menu(c):
     website_keyList = viewKeys(c)
     
     for website_key in website_keyList:
-        print("|-- " + website_key)
+        print("|-- " + website_key[0])
     
     selected = input('\n(a)dd, (d)elete, (c)opy, or (q)uit? >>> ').lower()
     
@@ -70,7 +66,7 @@ def copyKey(website_key, conn, c):
         password = c.fetchone()
         pyperclip.copy(password[0])
         
-        print("Password has been copied to your clipboard!")
+        print("Password has been copied to your clipboard")
           
 def main():
     conn = sqlite3.connect('test.db')
