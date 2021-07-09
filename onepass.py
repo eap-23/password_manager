@@ -64,9 +64,12 @@ def generateKeys():
 def insertKey(keys, conn, c):
     for key in keys:
         with conn:
-            c.execute("INSERT INTO keys VALUES (:website_key, :username, :password)", 
-                  {'website_key':key.website_key, 'username':key.username, 
-                   'password':key.password})  
+            try:
+                c.execute("INSERT INTO keys VALUES (:website_key, :username, :password)", 
+                    {'website_key':key.website_key, 'username':key.username, 
+                    'password':key.password})
+            except sqlite3.IntegrityError:
+                print("Key cannot be added because <" + key.website_key + "> already exists!")  
             
 def deleteKey(website_key, conn, c):
      with conn:
