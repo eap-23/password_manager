@@ -3,21 +3,36 @@ import sqlite3
 import pyperclip
 from key import Key
 
+def checkTableExistence(c):
+    c.execute("SELECT name FROM sqlite_master")
+    tableList = c.fetchall()
+    
+    if tableList == []:
+        tableExistence = False
+    else:
+        tableExistence = True
+        
+    return tableExistence
+        
 def viewKeys(c):
     c.execute("SELECT website_key FROM keys")
     website_keyList = c.fetchall()
     
     return website_keyList
     
-def menu(c):
+def menu(tableExistence, c):
     print("\nOnePass - Password Manager")
     
-    website_keyList = viewKeys(c)
+    if tableExistence == False:
+        selected = input("\n(a)dd or (q)uit? >>> ").lower()
     
-    for website_key in website_keyList:
-        print("|-- " + website_key[0])
-    
-    selected = input('\n(a)dd, (d)elete, (c)opy, or (q)uit? >>> ').lower()
+    else:
+        website_keyList = viewKeys(c)
+        
+        for website_key in website_keyList:
+            print("|-- " + website_key[0])
+        
+        selected = input('\n(a)dd, (d)elete, (c)opy, or (q)uit? >>> ').lower()
     
     return selected
            
@@ -72,12 +87,14 @@ def main():
     conn = sqlite3.connect('test.db')
     c = conn.cursor()
     
-    if os.path.exists('test.db'):
+    tableExistence = checkTableExistence(c)
+    
+    if tableExistence == True:
         pass
     else:
         createTable(c)
 
-    selected = menu(c)
+    selected = menu(tableExistence, c)
     
     if selected == "a":   
         keys = generateKeys()
