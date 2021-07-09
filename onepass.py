@@ -83,30 +83,44 @@ def copyKey(website_key, conn, c):
         
         print("Password has been copied to your clipboard")
           
+def runCommand(tableExistence, selected, conn, c):
+    
+    if selected == "a":
+        if tableExistence == False:
+            createTable(c)   
+        keys = generateKeys()
+        insertKey(keys, conn, c)
+        
+    elif selected == "d":
+        if tableExistence == False:
+            print("Invalid Command")
+        else:
+            website_key = input("Enter Key to Delete: ")
+            deleteKey(website_key, conn, c)
+        
+    elif selected == "c":
+        if tableExistence == False:
+            print("Invalid Command")
+        else:
+            website_key = input("Enter Key to Copy Password: ")
+            copyKey(website_key, conn, c)
+    
+    elif selected == "q":
+        pass
+        
+    else:
+        print("Invalid Command")
+        exit()
+    
 def main():
     conn = sqlite3.connect('test.db')
     c = conn.cursor()
     
     tableExistence = checkTableExistence(c)
-    
-    if tableExistence == True:
-        pass
-    else:
-        createTable(c)
 
     selected = menu(tableExistence, c)
     
-    if selected == "a":   
-        keys = generateKeys()
-        insertKey(keys, conn, c)
-    elif selected == "d":
-        website_key = input("Enter Key to Delete: ")
-        deleteKey(website_key, conn, c)
-    elif selected == "c":
-        website_key = input("Enter Key to Copy Password: ")
-        copyKey(website_key, conn, c)
-    elif selected == "q":
-        pass
+    runCommand(tableExistence, selected, conn, c)
     
     conn.commit()
     conn.close()
