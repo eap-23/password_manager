@@ -83,7 +83,7 @@ def deleteKey(website_key, conn, c):
         toBeDeleted = c.fetchone()
         
         if toBeDeleted == None:
-            print("Entered key does not exist.")
+            print("Entered key ID does not exist.")
         else: 
             c.execute("DELETE from keys WHERE website_key = :website_key", 
                       {'website_key': website_key})
@@ -95,9 +95,12 @@ def copyKey(website_key, conn, c):
                   {'website_key': website_key})
         
         password = c.fetchone()
-        pyperclip.copy(password[0])
         
-        print("Password has been copied to your clipboard")
+        try:
+            pyperclip.copy(password[0])
+            print("Password has been copied to your clipboard!")
+        except TypeError:
+            print("Entered key ID does not exist.")
           
 def runCommand(tableExistence, selected, conn, c):
     
