@@ -44,14 +44,18 @@ def createTable(c):
                 )""")
 
 def generateKeys():
-    #Need to make this an iteration!
-    numKeys = int(input('Enter Number of Keys: '))
+    try:
+        numKeys = int(input('Enter number of keys to be added: '))
+    except ValueError:
+        print("Invalid command. Integer value expected.")
+        exit()
+        
     print()
     keys = []
     
     for i in range(0, numKeys):             
-        website_key = input('Enter Key Name: ')
-        username = input('Enter username used for website: ')
+        website_key = input('Enter key name: ')
+        username = input('Enter username: ')
         password = input('Enter password: ')
         print()
     
@@ -72,9 +76,18 @@ def insertKey(keys, conn, c):
                 print("Key cannot be added because <" + key.website_key + "> already exists!")  
             
 def deleteKey(website_key, conn, c):
-     with conn:
-         c.execute("DELETE from keys WHERE website_key = :website_key",
-                   {'website_key': website_key})
+    with conn:
+        c.execute("SELECT website_key FROM keys WHERE website_key = :website_key",
+                  {'website_key': website_key})
+         
+        toBeDeleted = c.fetchone()
+        
+        if toBeDeleted == None:
+            print("Entered key does not exist.")
+        else: 
+            c.execute("DELETE from keys WHERE website_key = :website_key", 
+                      {'website_key': website_key})
+            print("Key ID <" + website_key + "> deleted from database.")
          
 def copyKey(website_key, conn, c):
     with conn:
