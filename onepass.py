@@ -48,12 +48,11 @@ def generateKeys():
     except ValueError:
         print("Invalid command. Integer value expected.")
         exit()
-        
-    print()
+
     keys = []
     
     for i in range(0, numKeys):             
-        website_key = input('Enter Key ID: ')
+        website_key = input('\nEnter Key ID: ')
         username = input('Enter username: ')
         password = input('Enter password: ')
     
@@ -81,7 +80,7 @@ def deleteKey(website_key, conn, c):
         toBeDeleted = c.fetchone()
         
         if toBeDeleted == None:
-            print("Entered Key ID does not exist.")
+            print("Error: Key ID does not exist")
         else: 
             c.execute("DELETE from keys WHERE website_key = :website_key", 
                       {'website_key': website_key})
@@ -106,7 +105,7 @@ def copyKey(website_key, conn, c):
             pyperclip.copy(password[0])
             print("Password has been copied to your clipboard!")
         except TypeError:
-            print("Entered Key ID does not exist.")
+            print("Error: Key ID does not exist")
             
 def updateKey(website_key, conn, c):
     with conn:
@@ -116,7 +115,7 @@ def updateKey(website_key, conn, c):
         toBeUpdated = c.fetchone()
         
         if toBeUpdated == None:
-            print("Entered Key ID does not exist.")
+            print("Error: Key ID does not exist")
         else:
             password = input("Enter new password: ")
     
@@ -136,7 +135,7 @@ def runCommand(tableExistence, selected, conn, c):
         
     elif selected == "d":
         if tableExistence == False:
-            print("Invalid Command")
+            print("Invalid command")
         else:
             website_key = input("Enter Key ID to delete: ")
             print()
@@ -144,7 +143,7 @@ def runCommand(tableExistence, selected, conn, c):
         
     elif selected == "c":
         if tableExistence == False:
-            print("Invalid Command")
+            print("Invalid command")
         else:
             website_key = input("Enter Key ID to copy password: ")
             print()
@@ -152,7 +151,7 @@ def runCommand(tableExistence, selected, conn, c):
             
     elif selected == "u":
         if tableExistence == False:
-            print("Invalid Command")
+            print("Invalid command")
         else:
             website_key = input("Enter Key ID to update password: ")
             print()
@@ -162,7 +161,7 @@ def runCommand(tableExistence, selected, conn, c):
         pass
         
     else:
-        print("Invalid Command")
+        print("Invalid command")
         exit()
     
 def main():
