@@ -174,8 +174,8 @@ def main():
     conn.commit()
     conn.close()
     
-main()   
-
+if __name__ == "__main__":
+    main()   
 
         
     
