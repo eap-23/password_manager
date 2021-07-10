@@ -1,4 +1,3 @@
-import os.path
 import sqlite3
 import pyperclip
 from key import Key
@@ -54,10 +53,9 @@ def generateKeys():
     keys = []
     
     for i in range(0, numKeys):             
-        website_key = input('Enter key name: ')
+        website_key = input('Enter Key ID: ')
         username = input('Enter username: ')
         password = input('Enter password: ')
-        print()
     
         key = Key(website_key, username, password)
         
@@ -100,7 +98,7 @@ def copyKey(website_key, conn, c):
             pyperclip.copy(password[0])
             print("Password has been copied to your clipboard!")
         except TypeError:
-            print("Entered key ID does not exist.")
+            print("Entered Key ID does not exist.")
           
 def runCommand(tableExistence, selected, conn, c):
     
@@ -114,14 +112,16 @@ def runCommand(tableExistence, selected, conn, c):
         if tableExistence == False:
             print("Invalid Command")
         else:
-            website_key = input("Enter Key to Delete: ")
+            website_key = input("Enter Key ID to delete: ")
+            print()
             deleteKey(website_key, conn, c)
         
     elif selected == "c":
         if tableExistence == False:
             print("Invalid Command")
         else:
-            website_key = input("Enter Key to Copy Password: ")
+            website_key = input("Enter Key ID to copy password: ")
+            print()
             copyKey(website_key, conn, c)
     
     elif selected == "q":
