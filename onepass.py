@@ -31,7 +31,7 @@ def menu(tableExistence, c):
         for website_key in website_keyList:
             print("|-- " + website_key[0])
         
-        selected = input('\n(a)dd, (d)elete, (c)opy, or (q)uit? >>> ').lower()
+        selected = input('\n(a)dd, (d)elete, (c)opy, (u)pdate, or (q)uit? >>> ').lower()
     
     return selected
            
@@ -81,7 +81,7 @@ def deleteKey(website_key, conn, c):
         toBeDeleted = c.fetchone()
         
         if toBeDeleted == None:
-            print("Entered key ID does not exist.")
+            print("Entered Key ID does not exist.")
         else: 
             c.execute("DELETE from keys WHERE website_key = :website_key", 
                       {'website_key': website_key})
@@ -99,6 +99,24 @@ def copyKey(website_key, conn, c):
             print("Password has been copied to your clipboard!")
         except TypeError:
             print("Entered Key ID does not exist.")
+            
+def updateKey(website_key, conn, c):
+    with conn:
+        c.execute("SELECT website_key FROM keys WHERE website_key = :website_key",
+                  {'website_key': website_key})
+         
+        toBeUpdated = c.fetchone()
+        
+        if toBeUpdated == None:
+            print("Entered Key ID does not exist.")
+        else:
+            password = input("Enter new password: ")
+    
+            with conn:
+                c.execute("UPDATE keys SET password = :password WHERE website_key = :website_key",
+                          {'password': password, 'website_key': website_key})
+            
+            print("Password for <" + website_key + "> has been updated!")
           
 def runCommand(tableExistence, selected, conn, c):
     
@@ -123,6 +141,14 @@ def runCommand(tableExistence, selected, conn, c):
             website_key = input("Enter Key ID to copy password: ")
             print()
             copyKey(website_key, conn, c)
+            
+    elif selected == "u":
+        if tableExistence == False:
+            print("Invalid Command")
+        else:
+            website_key = input("Enter Key ID to update password: ")
+            print()
+            updateKey(website_key, conn, c)
     
     elif selected == "q":
         pass
