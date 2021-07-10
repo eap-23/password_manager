@@ -86,6 +86,14 @@ def deleteKey(website_key, conn, c):
             c.execute("DELETE from keys WHERE website_key = :website_key", 
                       {'website_key': website_key})
             print("Key ID <" + website_key + "> deleted from database.")
+            
+            c.execute("SELECT * FROM keys")
+            rowNum = len(c.fetchall())
+            
+            if rowNum == 0:
+                c.execute("DROP table keys")
+            else:
+                pass
          
 def copyKey(website_key, conn, c):
     with conn:
