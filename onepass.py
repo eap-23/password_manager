@@ -38,7 +38,6 @@ def menu(tableExistence, c):
 def createTable(c):    
     c.execute("""CREATE TABLE keys (
                 website_key text primary key,
-                username text,
                 password text
                 )""")
 
@@ -46,17 +45,16 @@ def generateKeys():
     try:
         numKeys = int(input('Enter number of keys to be added: '))
     except ValueError:
-        print("Invalid command. Integer value expected.")
+        print("Invalid command: integer value expected")
         exit()
 
     keys = []
     
     for i in range(0, numKeys):             
-        website_key = input('\nEnter Key ID: ')
-        username = input('Enter username: ')
-        password = input('Enter password: ')
+        website_key = input('\nKey ID: ')
+        password = input('Password: ')
     
-        key = Key(website_key, username, password)
+        key = Key(website_key, password)
         
         keys.append(key)
     
@@ -66,9 +64,8 @@ def insertKey(keys, conn, c):
     for key in keys:
         with conn:
             try:
-                c.execute("INSERT INTO keys VALUES (:website_key, :username, :password)", 
-                    {'website_key':key.website_key, 'username':key.username, 
-                    'password':key.password})
+                c.execute("INSERT INTO keys VALUES (:website_key, :password)", 
+                    {'website_key':key.website_key, 'password':key.password})
             except sqlite3.IntegrityError:
                 print("Key cannot be added because <" + key.website_key + "> already exists!")  
             
@@ -117,7 +114,7 @@ def updateKey(website_key, conn, c):
         if toBeUpdated == None:
             print("Error: Key ID does not exist")
         else:
-            password = input("Enter new password: ")
+            password = input("New password: ")
     
             with conn:
                 c.execute("UPDATE keys SET password = :password WHERE website_key = :website_key",
