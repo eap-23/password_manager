@@ -238,7 +238,7 @@ def main():
     Any changes made to database are committed and
     conection closed before program end."""
     
-    conn = sqlite3.connect('test.db')
+    conn = sqlite3.connect('keychain.db')
     c = conn.cursor()
     
     tableExistence = checkTableExistence(c)
